@@ -61,6 +61,7 @@ def compute_u(
     request: Dict,
     hparams: ROMEHyperParams,
     layer: int,
+    c_scale:float,
     context_templates: List[str],
 ) -> torch.Tensor:
     """
@@ -107,14 +108,19 @@ def compute_u(
     # Apply inverse second moment adjustment
     u = cur_repr
     if hparams.mom2_adjustment:
-        u = get_inv_cov(
+        c = get_inv_cov(
             model,
             tok,
             hparams.rewrite_module_tmp.format(layer),
             hparams.mom2_dataset,
             hparams.mom2_n_samples,
             hparams.mom2_dtype,
-        ) @ u.unsqueeze(1)
+        )
+        print(f'C^-1 normalization factor: {c}')
+        if c_scale != 1.0:
+            c *= c_scale
+            print(f'C^-1 adjusted by factor: {c_scale} to {c}')
+        u = c @ u.unsqueeze(1)
         u = u.squeeze()
 
     return u / u.norm()
