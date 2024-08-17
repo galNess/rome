@@ -116,10 +116,10 @@ def compute_u(
             hparams.mom2_n_samples,
             hparams.mom2_dtype,
         )
-        print(f'C^-1 normalization factor: {c}')
+        print(f'C^-1 normalization factor shape: {c.shape}')
         if c_scale != 1.0:
             c *= c_scale
-            print(f'C^-1 adjusted by factor: {c_scale} to {c}')
+            print(f'C^-1 adjusted by factor: {c_scale}')
         u = c @ u.unsqueeze(1)
         u = u.squeeze()
 

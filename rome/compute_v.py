@@ -179,6 +179,7 @@ def compute_v(
 
     # Solving the linear system to compute the right vector
     right_vector = (target - cur_output) / torch.dot(cur_input, left_vector)
+    print("Denominator value:", torch.dot(cur_input, left_vector))
     print(f"Delta norm: {(target - cur_output).norm().item()}")
     print(
         f"Change in target norm: {target_init.norm().item()} to {target.norm().item()} => {(target.norm() - target_init.norm()).item()}"
