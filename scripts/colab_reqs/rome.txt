@@ -1,4 +1,3 @@
 datasets
-util
 python-dotenv==0.19.2
 git+https://github.com/kmeng01/transformers-colab@allennlp-compat
