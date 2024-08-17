@@ -1,3 +1,8 @@
+This is an experimental fork of [the original ROME repo](https://github.com/kmeng01/rome). You should probably go there...
+
+------
+
+
 # Rank-One Model Editing (ROME)
 
 This repository provides an implementation of Rank-One Model Editing (ROME) on auto-regressive transformers (GPU-only).
