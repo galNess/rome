@@ -122,6 +122,11 @@ def layer_stats(
 
     if not filename.exists() and download:
         remote_url = f"{REMOTE_ROOT_URL}/data/stats/{file_extension}"
+
+        FORCE_RECOMPUTE_C = False  # also change in compute_u.py!
+        if FORCE_RECOMPUTE_C:
+            remote_url = 'wrong + ' + remote_url
+
         try:
             print(f"Attempting to download {file_extension} from {remote_url}.")
             (stats_dir / "/".join(file_extension.split("/")[:-1])).mkdir(
@@ -152,10 +157,11 @@ def layer_stats(
     batch_count = -(-(sample_size or len(ds)) // batch_size)
     with torch.no_grad():
         for batch_group in progress(loader, total=batch_count):
-            for bi in enumerate(batch_group):
+            for bi, batch in enumerate(batch_group):
                 batch = dict_to_(batch, "cuda")
                 if bi == 0:
-                    print('First sample from first batch: ', batch[0])
+                    for key in ['input_ids', 'position_ids', 'attention_mask']:
+                        print(f'First {key}: ', batch[key][:, 0])
 
                 with Trace(
                     model, layer_name, retain_input=True, retain_output=False, stop=True

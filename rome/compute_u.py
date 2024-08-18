@@ -33,7 +33,8 @@ def get_inv_cov(
     model_name = model.config._name_or_path.replace("/", "_")
     key = (model_name, layer_name)
 
-    if True:  # key not in inv_mom2_cache:
+    FORCE_RECOMPUTE_C = False  # also change in layer_stats.py!
+    if (key not in inv_mom2_cache) or FORCE_RECOMPUTE_C:
         print(
             f"Retrieving inverse covariance statistics for {model_name} @ {layer_name}. "
             f"The result will be cached to avoid repetitive computation."
@@ -61,7 +62,7 @@ def compute_u(
     request: Dict,
     hparams: ROMEHyperParams,
     layer: int,
-    c_scale:float,
+    c_scale: float,
     context_templates: List[str],
 ) -> torch.Tensor:
     """
