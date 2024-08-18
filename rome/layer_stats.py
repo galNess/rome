@@ -152,8 +152,11 @@ def layer_stats(
     batch_count = -(-(sample_size or len(ds)) // batch_size)
     with torch.no_grad():
         for batch_group in progress(loader, total=batch_count):
-            for batch in batch_group:
+            for bi in enumerate(batch_group):
                 batch = dict_to_(batch, "cuda")
+                if bi == 0:
+                    print('First sample from first batch: ', batch[0])
+
                 with Trace(
                     model, layer_name, retain_input=True, retain_output=False, stop=True
                 ) as tr:

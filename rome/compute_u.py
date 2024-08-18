@@ -33,7 +33,7 @@ def get_inv_cov(
     model_name = model.config._name_or_path.replace("/", "_")
     key = (model_name, layer_name)
 
-    if key not in inv_mom2_cache:
+    if True:  # key not in inv_mom2_cache:
         print(
             f"Retrieving inverse covariance statistics for {model_name} @ {layer_name}. "
             f"The result will be cached to avoid repetitive computation."
@@ -81,12 +81,12 @@ def compute_u(
     if "subject_" in hparams.fact_token and hparams.fact_token.index("subject_") == 0:
         word = request["subject"]
         print(f"Selected u projection object {word}")
-        context_templates = [
+        context_templates_exp = [
             templ.format(request["prompt"]) for templ in context_templates
         ]
-        print(context_templates)
+        print('The used context templates are: ', context_templates_exp)
         cur_repr = repr_tools.get_reprs_at_word_tokens(
-            context_templates=context_templates,
+            context_templates=context_templates_exp,
             words=[word for _ in range(len(context_templates))],
             subtoken=hparams.fact_token[len("subject_") :],
             **word_repr_args,
@@ -124,5 +124,7 @@ def compute_u(
             print(f'C^-1 adjusted by factor: {c_scale}')
         u = c @ u.unsqueeze(1)
         u = u.squeeze()
+
+        print(f'Before returning u, normalize by norm {u.norm()}')
 
     return u / u.norm()
