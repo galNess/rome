@@ -102,7 +102,8 @@ def execute_rome(
             c_scale,
             get_context_templates(model, tok, hparams.context_template_length_params),
         )
-        print("Left vector shape:", left_vector.shape)
+        print("Left vector (u) shape:", left_vector.shape)  # 4d = 6400 for GPT2xl
+
         right_vector: torch.Tensor = compute_v(
             model,
             tok,
@@ -112,13 +113,14 @@ def execute_rome(
             left_vector,
             get_context_templates(model, tok, hparams.context_template_length_params),
         )
-        print("Right vector shape:", right_vector.shape)
+        print("Right vector (v) shape:", right_vector.shape)  # 1d = 1600 for GPT2xl
 
         with torch.no_grad():
             # Determine correct transposition of delta matrix
             weight_name = f"{hparams.rewrite_module_tmp.format(layer)}.weight"
             upd_matrix = left_vector.unsqueeze(1) @ right_vector.unsqueeze(0)
             upd_matrix = upd_matrix_match_shape(upd_matrix, weights[weight_name].shape)
+            print("delta W = u @ (v^T) shape:", upd_matrix.shape)  # 4d * 1d
 
             # Update model weights and record desired changes in `delta` variable
             weights[weight_name][...] += upd_matrix
@@ -146,6 +148,7 @@ def upd_matrix_match_shape(matrix: torch.Tensor, shape: torch.Size) -> torch.Ten
     if matrix.shape == shape:
         return matrix
     elif matrix.T.shape == shape:
+        print('Weights delta matrix transposed')
         return matrix.T
     else:
         raise ValueError(
