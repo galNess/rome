@@ -33,7 +33,7 @@ def get_inv_cov(
     model_name = model.config._name_or_path.replace("/", "_")
     key = (model_name, layer_name)
 
-    FORCE_RECOMPUTE_C = False  # also change in layer_stats.py!
+    FORCE_RECOMPUTE_C = False  # also change in layer_stats.py line 126!
     if (key not in inv_mom2_cache) or FORCE_RECOMPUTE_C:
         print(
             f"Retrieving inverse covariance statistics for {model_name} @ {layer_name}. "

@@ -123,7 +123,7 @@ def layer_stats(
     if not filename.exists() and download:
         remote_url = f"{REMOTE_ROOT_URL}/data/stats/{file_extension}"
 
-        FORCE_RECOMPUTE_C = False  # also change in compute_u.py!
+        FORCE_RECOMPUTE_C = False  # also change in compute_u.py line 36!
         if FORCE_RECOMPUTE_C:
             remote_url = 'wrong + ' + remote_url
 
